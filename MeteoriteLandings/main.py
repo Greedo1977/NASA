@@ -62,8 +62,8 @@ def main() -> int:
 
     fig = px.scatter_geo(lat=latitudes, lon=longitudes, title=map_title,
                          color=masses,
-                         color_continuous_scale='reds',
-                         labels={'color': 'Mass'},
+                         color_continuous_scale='earth',
+                         labels={'color': 'Mass(Kg)'},
                          projection='natural earth',
                          hover_name=hover_text
                          )
