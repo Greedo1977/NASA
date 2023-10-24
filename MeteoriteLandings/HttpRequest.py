@@ -10,13 +10,14 @@ class myHttpRequest:
         statuscode = 0
         try:
             self.response_ = requests.get(self.url_)
-        except self.requests_.exceptions.ConnectionError:
+        except requests.ConnectionError:
             print('***** Connection Error *****')
-        except self.requests_.exceptions.Timeout:
+        except requests.Timeout:
             print('***** Timeout Error *****')
         else:
             return self.response_.status_code
 
     def get_json(self):
-        return self.response_.json()
+        resp = self.response_.json()
+        return resp
 
