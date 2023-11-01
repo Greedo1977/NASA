@@ -1,21 +1,14 @@
 import sys
 import HttpRequest as ht
 import Meteor as mt
+import MeteorCollection as mc
 import plotly.express as px
 
 
-def extract_meteor_attributes(meteors):
-    longitude_, latitude_, mass_ = [],[],[]
-    for a_meteor in meteors:
-        longitude_.append(a_meteor.longitude)
-        latitude_.append(a_meteor.latitude)
-        mass_.append(float(a_meteor.mass)/1000)
-
-    return longitude_, latitude_, mass_
 
 # =====================================
-
-def extract_meteors_to_list(meteors_json, meteors):
+def extract_meteors_to_list(meteors_json):
+    meteors = []
     for a_meteor in meteors_json:
         try:
             m = mt.Meteor(name=a_meteor['name'],
@@ -31,15 +24,7 @@ def extract_meteors_to_list(meteors_json, meteors):
         else:
             meteors.append(m)
 
-# =====================================
-
-def extract_hover_text(meteors):
-    hover_text = []
-    for a_meteor in meteors:
-        hover_text.append(f'{a_meteor.year} Name: {a_meteor.name}')
-
-    return hover_text
-
+    return meteors
 # =====================================
 
 
@@ -51,14 +36,15 @@ def main() -> int:
     my_request.get_http_request()
     meteors_json = my_request.get_json()
 
-    meteors = []
-    extract_meteors_to_list(meteors_json, meteors)
+    meteors_list = []
+    meteors_list = extract_meteors_to_list(meteors_json)
+    meteor_collection = mc.MeteorCollection(meteors_list)
 
     # Show in geo location map
-    longitudes, latitudes, masses = extract_meteor_attributes(meteors)
+    longitudes, latitudes, masses = meteor_collection.extract_meteor_attributes()
 
     map_title = 'Meteoroid impacts on Earth'
-    hover_text = extract_hover_text(meteors)
+    hover_text = meteor_collection.extract_hover_text()
 
     fig = px.scatter_geo(lat=latitudes, lon=longitudes, title=map_title,
                          color=masses,
